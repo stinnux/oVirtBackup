@@ -159,14 +159,17 @@ def main(argv):
             vms_with_failures.remove(vm_from_list)
         except errors.ConnectionError as e:
             Logger.log("!!! Can't connect to the server" + str(e))
+            traceback.print_exc()
             connect()
             continue
         except errors.RequestError as e:
             Logger.log("!!! Got a RequestError: " + str(e))
+            traceback.print_exc()
             has_errors = True
             continue
         except  Exception as e:
             Logger.log("!!! Got unexpected exception: " + str(e))
+            traceback.print_exc()
             api.disconnect()
             sys.exit(1)
 
