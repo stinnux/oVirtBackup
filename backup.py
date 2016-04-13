@@ -111,6 +111,8 @@ def main(argv):
                 Logger.log("DEBUG: " + str(e))
                 has_errors = True
                 continue
+            # Workaround for some SDK problems see issue #17
+            time.sleep(10)
         
             # Clone the snapshot into a VM
             snapshots = vm.snapshots.list(description=config.get_snapshot_description())
