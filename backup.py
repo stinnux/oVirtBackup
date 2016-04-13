@@ -9,6 +9,7 @@ from config import Config
 from getopt import getopt, GetoptError
 from logger import Logger
 import vmlist
+import traceback
 
 """
 Main class to make the backups
@@ -169,6 +170,7 @@ def main(argv):
             continue
         except  Exception as e:
             Logger.log("!!! Got unexpected exception: " + str(e))
+            traceback.print_exc()
             api.disconnect()
             sys.exit(1)
 

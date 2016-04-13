@@ -121,23 +121,25 @@ class VMTools:
         :param api: ovirtsdk api
         :param config: Configuration
         """
-        exported_vms = api.storagedomains.get(config.get_export_domain()).vms.list()
-        for i in exported_vms:
-            vm_name_export = str(i.get_name())
-            if vm_name_export.startswith(vm_name + config.get_vm_middle()):
-                datetimeStart = datetime.datetime.combine((datetime.date.today() - datetime.timedelta(config.get_backup_keep_count())), datetime.datetime.min.time())
-                timestampStart = time.mktime(datetimeStart.timetuple())
-                datetimeCreation = i.get_creation_time()
-                datetimeCreation = datetimeCreation.replace(hour=0, minute=0, second=0)
-                timestampCreation = time.mktime(datetimeCreation.timetuple())
-                if timestampCreation < timestampStart:
-                    Logger.log("Backup deletion started for backup: " + vm_name_export)
-                    if not config.get_dry_run():
-                        i.delete()
-                        while vm_name_export in [vm.name for vm in api.storagedomains.get(config.get_export_domain()).vms.list()]:
-                            if config.get_debug():
-                                Logger.log("Delete old backup in progress ...")
-                            time.sleep(config.get_timeout())
+        storagedomain = api.storagedomains.get(config.get_export_domain())
+        if storagedomain is not None:
+            exported_vms = storagedomain.vms.list()
+            for i in exported_vms:
+                vm_name_export = str(i.get_name())
+                if vm_name_export.startswith(vm_name + config.get_vm_middle()):
+                    datetimeStart = datetime.datetime.combine((datetime.date.today() - datetime.timedelta(config.get_backup_keep_count())), datetime.datetime.min.time())
+                    timestampStart = time.mktime(datetimeStart.timetuple())
+                    datetimeCreation = i.get_creation_time()
+                    datetimeCreation = datetimeCreation.replace(hour=0, minute=0, second=0)
+                    timestampCreation = time.mktime(datetimeCreation.timetuple())
+                    if timestampCreation < timestampStart:
+                        Logger.log("Backup deletion started for backup: " + vm_name_export)
+                        if not config.get_dry_run():
+                            i.delete()
+                            while vm_name_export in [vm.name for vm in api.storagedomains.get(config.get_export_domain()).vms.list()]:
+                                if config.get_debug():
+                                    Logger.log("Delete old backup in progress ...")
+                                time.sleep(config.get_timeout())
 
     @staticmethod
     def check_free_space(api, config, vm):
