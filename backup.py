@@ -9,6 +9,7 @@ from config import Config
 from getopt import getopt, GetoptError
 from logger import Logger
 import vmlist
+import traceback
 
 """
 Main class to make the backups
