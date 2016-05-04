@@ -48,7 +48,7 @@ class Config(object):
     def clear_vm_suffix(self):
         self.__vm_suffix = "_" + strftime("%Y%m%d_%H%M%S")
         if self.__use_short_suffix:
-            self.__vm_suffix = "_" + strftime("%m%d%S")
+            self.__vm_suffix = "_" + strftime("%Y%m%d")
 
 
     def get_vm_suffix(self):
